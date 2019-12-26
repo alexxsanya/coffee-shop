@@ -19,6 +19,20 @@ CORS(app)
 # db_drop_and_create_all()
 
 ## ROUTES
+@app.route('/')
+def home():
+    return jsonify({
+        'success': True,
+        'message': 'Welcome to Coffee Shop API',
+        'APIs': {
+            '1': 'GET /drinks',
+            '2': 'GET /drinks-detail',
+            '3': 'POST /drinks',
+            '4': 'PATCH /drinks/<id>',
+            '5': 'DELETE /drinks/<id>'
+        }
+    }), 200
+
 '''
 @TODO implement endpoint
     GET /drinks
