@@ -61,7 +61,7 @@ def get_all_drinks():
 '''
 
 @app.route('/drinks-detail')
-@requires_auth('get:drinks-details')
+@requires_auth('get:drinks-detail')
 def fetch_drinks_detail(payload):
     drinks = Drink.query.all()
     return jsonify({
