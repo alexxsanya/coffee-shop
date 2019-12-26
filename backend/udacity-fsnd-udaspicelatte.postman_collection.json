@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "85928abb-c430-4ab8-863c-3ad872b8e6a4",
+		"_postman_id": "1d67245d-f5a0-44eb-bb67-f29aab672873",
 		"name": "udacity-fsnd-udaspicelatte-v2",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -486,7 +486,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Water3\",\n    \"recipe\": {\n        \"name\": \"Water\",\n        \"color\": \"blue\",\n        \"parts\": 1\n    }\n}"
+							"raw": "{\n    \"title\": \"Water4\",\n    \"recipe\": {\n        \"name\": \"Water\",\n        \"color\": \"red\",\n        \"parts\": 2\n    }\n}"
 						},
 						"url": {
 							"raw": "{{host}}/drinks",
