@@ -27,7 +27,15 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-
+@app.route('/drinks')
+def get_all_drinks():
+    drinks = Drink.query.all()
+    if len(drinks) == 0:
+        return jsonify({"drinks": "No drinks to display"})
+    return jsonify({
+        'success': True,
+        'drinks': [drink.short() for drink in drinks]
+    }), 200
 
 '''
 @TODO implement endpoint
@@ -37,6 +45,15 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+
+@app.route('/drinks-detail')
+@requires_auth('get:drinks-details')
+def fetch_drinks_detail(payload):
+    drinks = Drink.query.all()
+    return jsonify({
+        "success": True,
+        "drinks": [drink.long() for drink in drinks]
+    }), 200
 
 
 '''
@@ -49,6 +66,28 @@ CORS(app)
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks', methods=['POST'])
+@requires_auth('post:drinks')
+def add_drinks(payload):
+    request_data = request.get_json()
+
+    try:
+        recipe = request_data['recipe']
+        if isinstance(recipe, dict):
+            recipe = [recipe]
+
+        drink = Drink()
+        drink.title = request_data['title']
+        drink.recipe = json.dumps(recipe)
+        drink.insert()
+
+    except BaseException:
+        abort(400)
+
+    return jsonify({
+        'success': True, 
+        'drinks': [drink.long()]
+    })
 
 '''
 @TODO implement endpoint
@@ -62,6 +101,26 @@ CORS(app)
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks/<int:id>', methods=['PATCH'])
+@requires_auth('patch:drinks')
+def modify_drink(payload, id):
+    body = request.get_json()
+    drink = Drink.query.filter(Drink.id == id).one_or_none()
+
+    if not drink:
+        abort(404)
+
+    drink.recipe = body.get("recipe", drink.recipe)
+    drink.title = body.get("title", drink.title)
+
+    if isinstance(drink.recipe, list):
+        drink.recipe = json.dumps(drink.recipe)
+
+    drink.update()
+    return jsonify({
+        "success": True,
+        "drinks": drink.long()
+    }), 200
 
 '''
 @TODO implement endpoint
@@ -73,6 +132,19 @@ CORS(app)
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks/<int:id>', methods=['DELETE'])
+@requires_auth('delete:drinks')
+def delete_drinks(payload, id):
+    drink = Drink.query.filter(Drink.id == id).one_or_none()
+
+    if not drink:
+        abort(404)
+
+    drink.delete()
+    return jsonify({
+        "success": True,
+        "delete": id
+    }), 200
 
 
 ## Error Handling
